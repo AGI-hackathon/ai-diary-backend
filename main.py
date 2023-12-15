@@ -1,3 +1,5 @@
+import json
+
 from fastapi import FastAPI
 import pymongo
 import random
@@ -71,10 +73,14 @@ def get_emotion(current_text: str):
     mood = random.choice(moods)
     response = erniebot.ChatCompletion.create(model="ernie-bot",
                                               messages=[{"role": "user",
-                                                         "content": "分析这段话，作者当下是什么心情：" + current_text}])
+                                                         "content": "分析这段话，作者当下是什么心情,你只可以返回以下选项,你有五个选型可以选，  1.happy, 2.sad, 3.cry, 4.high, 5.low , 以括号json形式返回，格式是 {'mood':""},不要code block：" + current_text}])
 
-    print(response.get_result())
-    return {"mood": mood, "wenxin_resp": response.get_result()}
+    result = response.get_result().replace("```", '').replace("json", '').replace("\n", '')
+    print(result)
+    try:
+        return json.loads(result)
+    except Exception as e:
+        return {"mood": "normal"}
 
 
 @app.get("/", description="心跳测试接口")
