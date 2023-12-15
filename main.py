@@ -5,6 +5,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from bson import ObjectId
 from pydantic import BaseModel
 from typing import Union
+import erniebot
+
+erniebot.api_type = "aistudio"
+erniebot.access_token = "80936f46c7d8117d9dedd97acd1f8b68bbc19e76"
 
 
 class Diary(BaseModel):
@@ -65,7 +69,12 @@ def delete_diary(id: str):
 def get_emotion(current_text: str):
     moods = ["happy", "sad", "cry", "high", "low"]
     mood = random.choice(moods)
-    return {"mood": mood}
+    response = erniebot.ChatCompletion.create(model="ernie-bot",
+                                              messages=[{"role": "user",
+                                                         "content": "分析这段话，作者当下是什么心情：" + current_text}])
+
+    print(response.get_result())
+    return {"mood": mood, "wenxin_resp": response.get_result()}
 
 
 @app.get("/", description="心跳测试接口")
