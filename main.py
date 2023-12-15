@@ -3,6 +3,13 @@ import pymongo
 import random
 from fastapi.middleware.cors import CORSMiddleware
 from bson import ObjectId
+from pydantic import BaseModel
+
+
+class Diary(BaseModel):
+    title: str
+    content: str
+
 
 # mongoDB connection string:
 mongo_conn_str = 'mongodb+srv://agi-user-prod:O0lfjQSLEi6v423z@agi-diary-cluster.mtxn3qw.mongodb.net/'
@@ -27,9 +34,9 @@ app.add_middleware(
 )
 
 
-@app.post("/diary/upload/{title}/{content}", description="上传日记")
-def upload_diary(title: str, content: str):
-    py_db['diary'].insert_one({"title": title, "content": content})
+@app.put("/diary/upload", description="上传日记")
+def upload_diary(diary: Diary):
+    py_db['diary'].insert_one({"title": diary.title, "content": diary.content})
     return {"upload_status": "success"}
 
 
