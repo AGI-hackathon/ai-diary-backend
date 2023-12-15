@@ -80,6 +80,7 @@ def get_emotion(current_text: str):
     try:
         return json.loads(result)
     except Exception as e:
+
         return {"mood": "normal"}
 
 
