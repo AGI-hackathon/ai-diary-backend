@@ -2,6 +2,7 @@ from fastapi import FastAPI
 import pymongo
 import random
 from fastapi.middleware.cors import CORSMiddleware
+from bson import ObjectId
 
 # mongoDB connection string:
 mongo_conn_str = 'mongodb+srv://agi-user-prod:O0lfjQSLEi6v423z@agi-diary-cluster.mtxn3qw.mongodb.net/'
@@ -26,7 +27,7 @@ app.add_middleware(
 )
 
 
-@app.post("/diary/upload", description="上传日记")
+@app.post("/diary/upload/{title}/{content}", description="上传日记")
 def upload_diary(title: str, content: str):
     py_db['diary'].insert_one({"title": title, "content": content})
     return {"upload_status": "success"}
@@ -40,6 +41,12 @@ def fetch_diary():
         diary['_id'] = str(diary['_id'])
         diary_list.append(diary)
     return {"diary_list": diary_list}
+
+
+@app.delete("/diary/delete/{id}")
+def delete_diary(id: str):
+    py_db['diary'].delete_one({"_id": ObjectId(id)})
+    return {"delete_status": "success"}
 
 
 @app.get("/diary/emotion", description="获取现在心情")
