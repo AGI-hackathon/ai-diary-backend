@@ -35,7 +35,7 @@ app.add_middleware(
 )
 
 
-@app.put("/diary/upload/{diary_id}", description="上传日记")
+@app.put("/diary/upload", description="上传日记")
 def upload_diary(diary: Diary, diary_id: Union[str, None] = None):
     if diary_id is None:
         py_db['diary'].insert_one({"title": diary.title, "content": diary.content})
