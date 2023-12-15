@@ -71,7 +71,7 @@ def delete_diary(id: str):
 def get_emotion(current_text: str):
     moods = ["happy", "sad", "cry", "high", "low"]
     mood = random.choice(moods)
-    response = erniebot.ChatCompletion.create(model="ernie-bot",
+    response = erniebot.ChatCompletion.create(temperature=0.2, model="ernie-bot",
                                               messages=[{"role": "user",
                                                          "content": "分析这段话，作者当下是什么心情,你只可以返回以下选项,你有五个选型可以选，  1.happy, 2.sad, 3.cry, 4.high, 5.low , 以括号json形式返回，格式是 {'mood':""},不要code block：" + current_text}])
 
