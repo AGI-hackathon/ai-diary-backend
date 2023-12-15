@@ -4,6 +4,7 @@ import random
 from fastapi.middleware.cors import CORSMiddleware
 from bson import ObjectId
 from pydantic import BaseModel
+from typing import Union
 
 
 class Diary(BaseModel):
@@ -34,9 +35,13 @@ app.add_middleware(
 )
 
 
-@app.put("/diary/upload", description="上传日记")
-def upload_diary(diary: Diary):
-    py_db['diary'].insert_one({"title": diary.title, "content": diary.content})
+@app.put("/diary/upload/{diary_id}", description="上传日记")
+def upload_diary(diary: Diary, diary_id: Union[str, None] = None):
+    if diary_id is None:
+        py_db['diary'].insert_one({"title": diary.title, "content": diary.content})
+    else:
+        py_db['diary'].update_one({'_id': ObjectId(diary_id)},
+                                  {"$set": {"title": diary.title, "content": diary.content}})
     return {"upload_status": "success"}
 
 
