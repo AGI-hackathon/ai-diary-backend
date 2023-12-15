@@ -1,9 +1,7 @@
-from typing import Union
-from pydantic import BaseModel
 from fastapi import FastAPI
 import pymongo
 import random
-import json
+from fastapi.middleware.cors import CORSMiddleware
 
 # mongoDB connection string:
 mongo_conn_str = 'mongodb+srv://agi-user-prod:O0lfjQSLEi6v423z@agi-diary-cluster.mtxn3qw.mongodb.net/'
@@ -19,6 +17,13 @@ py_db = client['agi-db']
 # uvicorn main:app --host 0.0.0.0 --port 8080
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
 
 
 @app.post("/diary/upload", description="上传日记")
