@@ -21,14 +21,9 @@ py_db = client['agi-db']
 app = FastAPI()
 
 
-class Diary(BaseModel):
-    title: str
-    content: float
-
-
 @app.post("/diary/upload", description="上传日记")
-def upload_diary(diary: Diary):
-    py_db['diary'].insert_one(diary.model_dump())
+def upload_diary(title: str, content: str):
+    py_db['diary'].insert_one({"title": title, "content": content})
     return {"upload_status": "success"}
 
 
